@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
+@EnableFeignClients(basePackages = "com.mphasis.rmonboarding.feign")
 @ComponentScan("com.mphasis.rmonboarding")
 public class RMOnboardingServiceApplication {
 

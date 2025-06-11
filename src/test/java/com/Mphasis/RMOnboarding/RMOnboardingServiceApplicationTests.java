@@ -1,10 +1,10 @@
-package com.Mphasis.RMOnboarding.rm_onboarding_service;
+package com.mphasis.rmonboarding;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class RmOnboardingServiceApplicationTests {
+class RMOnboardingServiceApplicationTests {
 
 	@Test
 	void contextLoads() {

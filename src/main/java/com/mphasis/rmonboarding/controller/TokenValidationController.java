@@ -24,15 +24,18 @@ public class TokenValidationController {
 
             TokenValidationResponseDTO response = tokenValidationService.validateToken(username, token);
 
-            return ResponseEntity.ok(new TokenValidationResponseDTO(
-                    response.isValid(),
-                    response.getMessage()
-            ));
+            if (!response.isValid()) {
+                return ResponseEntity.status(403).body(response);
+            }
+
+            return ResponseEntity.ok(response);
 
         } catch (InvalidTokenException e) {
-            return ResponseEntity.ok(new TokenValidationResponseDTO(false, e.getMessage()));
+            return ResponseEntity.status(403)
+                    .body(new TokenValidationResponseDTO(false, e.getMessage(), null, null, null));
         } catch (Exception e) {
-            return ResponseEntity.ok(new TokenValidationResponseDTO(false, "Token validation failed"));
+            return ResponseEntity.status(500)
+                    .body(new TokenValidationResponseDTO(false, "Token validation failed due to server error", null, null, null));
         }
     }
 

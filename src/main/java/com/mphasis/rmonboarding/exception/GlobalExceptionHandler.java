@@ -10,6 +10,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
+import com.mphasis.rmonboarding.exception.InvalidCredentialsException;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -139,21 +140,21 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponseDTO, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponseDTO> handleGlobalException(
-            Exception ex, WebRequest request) {
-        logger.error("Unexpected exception: {}", ex.getMessage(), ex);
-
-        ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO(
-                HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                "Internal Server Error",
-                "An unexpected error occurred",
-                request.getDescription(false),
-                LocalDateTime.now()
-        );
-
-        return new ResponseEntity<>(errorResponseDTO, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+//    @ExceptionHandler(Exception.class)
+//    public ResponseEntity<ErrorResponseDTO> handleGlobalException(
+//            Exception ex, WebRequest request) {
+//        logger.error("Unexpected exception: {}", ex.getMessage(), ex);
+//
+//        ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO(
+//                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+//                "Internal Server Error",
+//                "An unexpected error occurred",
+//                request.getDescription(false),
+//                LocalDateTime.now()
+//        );
+//
+//        return new ResponseEntity<>(errorResponseDTO, HttpStatus.INTERNAL_SERVER_ERROR);
+//    }
 
     //Sign in exceptions below
     @ExceptionHandler(RuntimeException.class)

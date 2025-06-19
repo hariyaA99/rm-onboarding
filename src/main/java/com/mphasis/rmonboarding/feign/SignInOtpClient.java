@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import com.mphasis.rmonboarding.dto.LoginOtpRequest;
 import com.mphasis.rmonboarding.dto.LoginOtpVerificationRequest;
 
-@FeignClient(name = "otp-service", url = "http://localhost:8080")
+@FeignClient(name = "sign-in-otp-service", url = "http://localhost:8080")
 public interface SignInOtpClient {
 
     @PostMapping("api/otp/send")

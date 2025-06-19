@@ -15,8 +15,6 @@ public class SignInSessionDetailsServiceImpl implements SignInSessionDetailsServ
     }
 
 
-
-
     @Override
     public void saveSession(String username, String jwtToken) {
         SignInSessionDetails session = new SignInSessionDetails();

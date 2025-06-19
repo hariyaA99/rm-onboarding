@@ -7,6 +7,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Repository
 public interface SignOutSessionDetailsRepository extends JpaRepository<SignOutSessionDetails, String> {
@@ -26,6 +28,6 @@ public interface SignOutSessionDetailsRepository extends JpaRepository<SignOutSe
     boolean existsByUsernameAndToken(@Param("username") String username, @Param("token") String token);
 
     void deleteByUsername(String username);
-
+    List<SignOutSessionDetails> findByCreatedAtBefore(LocalDateTime time);
     boolean existsByUsername(String username);
 }

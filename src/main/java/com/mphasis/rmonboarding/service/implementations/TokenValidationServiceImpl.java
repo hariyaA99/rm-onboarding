@@ -28,7 +28,7 @@ public class TokenValidationServiceImpl implements TokenValidationService {
             Optional<SignOutSessionDetails> sessionOpt = sessionRepo.findByUsernameAndToken(username, token);
 
             if (sessionOpt.isEmpty()) {
-                return new TokenValidationResponseDTO(false, "Invalid username or token");
+                return new TokenValidationResponseDTO(false, "Invalid username or token", null, null, null);
             }
 
             SignOutSessionDetails session = sessionOpt.get();
@@ -37,13 +37,13 @@ public class TokenValidationServiceImpl implements TokenValidationService {
             if (session.getCreatedAt().plusMinutes(30).isBefore(now)) {
                 try {
                     sessionRepo.delete(session);
-                    return new TokenValidationResponseDTO(false, "Session has expired");
+                    return new TokenValidationResponseDTO(false, "Session has expired", username, token, session.getCreatedAt());
                 } catch (DataAccessException e) {
                     throw new DatabaseOperationException("Failed to clean up expired session", e);
                 }
             }
 
-            return new TokenValidationResponseDTO(true, "Session is active");
+            return new TokenValidationResponseDTO(true, "Session is active", username, token, session.getCreatedAt());
 
         } catch (DatabaseOperationException e) {
             throw e;

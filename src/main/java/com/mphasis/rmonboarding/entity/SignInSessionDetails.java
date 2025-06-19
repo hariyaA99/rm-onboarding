@@ -14,25 +14,15 @@ import java.time.LocalDateTime;
 public class SignInSessionDetails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
-    @Column(nullable = false, length = 100)
+    @Column(name="username",nullable = false, length = 100)
     private String username;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(name="token",columnDefinition = "TEXT")
     private String token;
 
     @Column(name = "created_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     public String getUsername() {
         return username;

@@ -72,7 +72,7 @@ public class SignOutController {
         }
 
         logger.info("Session not active or token invalid");
-        return ResponseEntity.ok("Session not active or token invalid");
+        return ResponseEntity.status(401).body("Session not active or token invalid");
     }
 
     private void validateAuthorizationHeader(String authHeader) {

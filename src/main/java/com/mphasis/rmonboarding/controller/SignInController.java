@@ -4,11 +4,14 @@ import com.mphasis.rmonboarding.dto.LoginRequestDTO;
 import com.mphasis.rmonboarding.dto.LoginWithOtpDTO;
 import com.mphasis.rmonboarding.entity.SignInUsers;
 import com.mphasis.rmonboarding.service.interfaces.SignInService;
+import com.mphasis.rmonboarding.service.interfaces.SignInSessionDetailsService;
+import com.mphasis.rmonboarding.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.mphasis.rmonboarding.dto.LoginOtpRequest;
 import com.mphasis.rmonboarding.feign.SignInOtpClient;
+import java.util.*;
 import com.mphasis.rmonboarding.dto.LoginOtpVerificationRequest;
 
 @RestController
@@ -18,12 +21,18 @@ public class SignInController {
 
     private final SignInService signInService;
     private final SignInOtpClient signInOtpClient;
+    private final JwtUtil jwtUtil;
+
 
     @Autowired
-    public SignInController(SignInOtpClient signInOtpClient, SignInService signInService) {
+    private SignInSessionDetailsService signInSessionDetailsService;
+
+    public SignInController(SignInOtpClient signInOtpClient,
+                            SignInService signInService,
+                            JwtUtil jwtUtil) {
         this.signInOtpClient = signInOtpClient;
         this.signInService = signInService;
-
+        this.jwtUtil = jwtUtil;
     }
 
     @PostMapping("/validate")
@@ -51,17 +60,17 @@ public class SignInController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<String> loginWithOtp(@RequestBody LoginWithOtpDTO request) {
+    public ResponseEntity<?> loginWithOtp(@RequestBody LoginWithOtpDTO request) {
         try {
             // Step 1: Call Feign client to verify OTP
             LoginOtpVerificationRequest loginOtpVerificationRequest = new LoginOtpVerificationRequest();
             loginOtpVerificationRequest.setEmail(request.getEmail());
             loginOtpVerificationRequest.setOtp(request.getOtp());
 
-            String response = signInOtpClient.verifyOtp(loginOtpVerificationRequest); // Call to OTP microservice
+            String otpVerificationResponse  = signInOtpClient.verifyOtp(loginOtpVerificationRequest); // Call to OTP microservice
 
             // Step 2: Check response from OTP service
-            if (!"OTP verified successfully.".equalsIgnoreCase(response)) {
+            if (!"OTP verified successfully.".equalsIgnoreCase(otpVerificationResponse )) {
                 return ResponseEntity.status(401).body("OTP verification failed ❌");
             }
 
@@ -71,7 +80,17 @@ public class SignInController {
                 return ResponseEntity.status(403).body("Account is blocked. Try again later.");
             }
 
-            return ResponseEntity.ok("Login successful ✅");
+
+                // ✅ Step 3: Generate JWT and save session
+            String jwtToken = jwtUtil.generateToken(user.getUsername());
+            signInSessionDetailsService.saveSession(user.getUsername(), jwtToken);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", "Login successful ✅");
+            response.put("token", jwtToken);
+            response.put("username", user.getUsername());
+
+            return ResponseEntity.ok(response);
 
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Server error during login.");

@@ -9,6 +9,8 @@ import com.mphasis.rmonboarding.feign.SignInOtpClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 import java.util.Optional;
 import com.mphasis.rmonboarding.config.PasswordConfig;
 @Service
@@ -57,12 +59,15 @@ public class SignInServiceImpl implements SignInService {
 
         if (!passwordEncoder.matches(rawPassword, user.getPasswordHash())) {
             // Increment failed attempts
+//            System.out.println("User entered: "+passwordEncoder.encode(rawPassword));
+//            System.out.println("DB password: "+user.getPasswordHash());
             int attempts = user.getFailedLoginAttempts() + 1;
             user.setFailedLoginAttempts(attempts);
 
             // Check if limit is reached
             if (attempts >= 3) {
                 user.setBlocked(true);
+                user.setModifiedOn(LocalDateTime.now());
                 signInRepository.save(user);
                 throw new RuntimeException("BLOCKED"); // Custom message
             }else {
@@ -89,6 +94,7 @@ public class SignInServiceImpl implements SignInService {
 
         if (attempts >= 3) {
             user.setBlocked(true);
+            user.setModifiedOn(LocalDateTime.now());
         }
 
         signInRepository.save(user);

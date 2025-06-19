@@ -11,7 +11,7 @@ public class SignInUsers {
     @Column(name = "rm_code", length = 20)
     private String rmCode;
 
-    @Column(length = 100)
+    @Column(name="username",length = 100)
     private String username;
 
     @Column(name = "password_hash", length = 255)
@@ -32,14 +32,11 @@ public class SignInUsers {
     @Column(name = "modified_by", length = 50)
     private String modifiedBy;
 
-    @Column(name = "must_reset_password")
-    private boolean mustResetPassword;
-
     @Column(name = "failed_login_attempts")
-    private int failedLoginAttempts;
+    private Integer failedLoginAttempts;
 
     @Column(name = "is_blocked")
-    private boolean isBlocked;
+    private Boolean isBlocked;
 
     public String getRmCode() {
         return rmCode;
@@ -105,15 +102,7 @@ public class SignInUsers {
         this.modifiedBy = modifiedBy;
     }
 
-    public boolean isMustResetPassword() {
-        return mustResetPassword;
-    }
-
-    public void setMustResetPassword(boolean mustResetPassword) {
-        this.mustResetPassword = mustResetPassword;
-    }
-
-    public int getFailedLoginAttempts() {
+    public Integer getFailedLoginAttempts() {
         return failedLoginAttempts;
     }
 
@@ -121,7 +110,7 @@ public class SignInUsers {
         this.failedLoginAttempts = failedLoginAttempts;
     }
 
-    public boolean isBlocked() {
+    public Boolean isBlocked() {
         return isBlocked;
     }
 
